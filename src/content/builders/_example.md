@@ -24,7 +24,7 @@ HOW TO ADD YOURSELF
    CLAUDE CERTIFICATIONS (optional) — add a `certs:` block with the ones you
    earned. Value = the Skilljar code OR the full verify URL. Known ids:
      claude_101, claude_code_101, mcp_intro, agent_skills_intro,
-     subagents_intro, claude_code_in_action, mcp_advanced, building_claude_api
+     subagents_intro, claude_code_in_action, building_claude_api
    Example:
      certs:
        claude_101:      293x3v9qydhx

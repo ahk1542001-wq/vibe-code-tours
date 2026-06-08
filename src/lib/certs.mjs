@@ -22,8 +22,7 @@ export const CERT_CATALOG = {
   agent_skills_intro: { label: "Intro to Agent Skills", level: "intermediate", order: 4 },
   subagents_intro: { label: "Intro to Subagents", level: "intermediate", order: 5 },
   claude_code_in_action: { label: "Claude Code in Action", level: "intermediate", order: 6 },
-  mcp_advanced: { label: "MCP: Advanced Topics", level: "advanced", order: 7 },
-  building_claude_api: { label: "Building with the Claude API", level: "advanced", order: 8 },
+  building_claude_api: { label: "Building with the Claude API", level: "advanced", order: 7 },
 };
 
 // Always-shown core slots (rendered grey when not earned).
@@ -45,8 +44,6 @@ export const CERT_ICONS = {
     '<circle cx="6" cy="5" r="1.8"/><circle cx="6" cy="19" r="1.8"/><circle cx="18" cy="12" r="1.8"/><path d="M6 7v10M7.6 6.4l8.8 4.8M7.6 17.6l8.8-4.8"/>',
   // Claude Code in Action — play
   claude_code_in_action: '<path d="M7 4l12 8-12 8z"/>',
-  // MCP Advanced — stacked layers
-  mcp_advanced: '<path d="M12 3l9 5-9 5-9-5zM3 13l9 5 9-5"/>',
   // Building with the Claude API — braces
   building_claude_api:
     '<path d="M8 3c-2 0-2.5 1.5-2.5 4S5 13 3 13c2 0 2.5 1.5 2.5 4S6 21 8 21M16 3c2 0 2.5 1.5 2.5 4S19 13 21 13c-2 0-2.5 1.5-2.5 4S18 21 16 21"/>',
@@ -57,15 +54,9 @@ export const DEFAULT_ICON =
 
 export const certIcon = (id) => CERT_ICONS[id] || DEFAULT_ICON;
 
-// Level → badge color. Warm amber→gold ramp by rigor; specialized = orange accent.
-export const LEVEL_COLORS = {
-  foundational: "#d97706", // deep amber (entry)
-  beginner: "#f59e0b", // amber
-  intermediate: "#fbbf24", // amber-bright
-  advanced: "#fde047", // gold (highest rigor)
-  specialized: "#f97316", // orange (side track)
-};
-export const CERT_GREY = "#3f3f46"; // unearned
+// Earned certs are brand amber; unearned are grey. (One color — no level ramp.)
+export const CERT_AMBER = "#f59e0b";
+export const CERT_GREY = "#3f3f46";
 
 // Skilljar verification codes seen so far are ~12 lowercase alphanumerics.
 // Be tolerant: 6–24 alphanumerics.
@@ -96,19 +87,6 @@ export function certMeta(id) {
   );
 }
 
-export const certColor = (level) => LEVEL_COLORS[level] || LEVEL_COLORS.beginner;
-
-// True amber→gold ramp across the bootcamp path: earlier certs amber,
-// later certs gold. Each cert reads as a distinct tier even at the same level.
-const RAMP_FROM = [245, 158, 11]; // #f59e0b amber
-const RAMP_TO = [253, 224, 71]; // #fde047 gold
-const MAX_ORDER = Math.max(...Object.values(CERT_CATALOG).map((c) => c.order));
-const hex2 = (n) => Math.round(n).toString(16).padStart(2, "0");
-export function certColorByOrder(order) {
-  const t = MAX_ORDER > 1 ? Math.min(Math.max((order - 1) / (MAX_ORDER - 1), 0), 1) : 0;
-  const [r, g, b] = RAMP_FROM.map((from, i) => from + (RAMP_TO[i] - from) * t);
-  return `#${hex2(r)}${hex2(g)}${hex2(b)}`;
-}
 
 // Normalize a raw `certs` frontmatter value into { id: code } with valid codes only.
 export function normalizeCerts(raw) {
@@ -139,7 +117,7 @@ export function certDisplayList(certs) {
       level: meta.level,
       earned: !!code,
       code: code || null,
-      color: code ? certColorByOrder(meta.order) : CERT_GREY,
+      color: code ? CERT_AMBER : CERT_GREY,
       url: code ? skilljarUrl(code) : null,
       icon: certIcon(id),
     };
